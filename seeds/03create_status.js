@@ -6,7 +6,7 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('status').insert([
         {
-          status_tail_number: 15000101,
+          status_tail_number: "15000101",
           aircraft_id: 1,
           base_id: 2,
           status_is_flyable: true,
@@ -14,7 +14,7 @@ exports.seed = function(knex) {
           status_priority: 1
         },
         {
-          status_tail_number: 15000202,
+          status_tail_number: "15000202",
           aircraft_id: 2,
           base_id: 1,
           status_is_flyable: false,
@@ -22,7 +22,7 @@ exports.seed = function(knex) {
           status_priority: 1
         },
         {
-          status_tail_number: 15000303,
+          status_tail_number: "15000303",
           aircraft_id: 4,
           base_id: 4,
           status_is_flyable: true,
@@ -30,7 +30,7 @@ exports.seed = function(knex) {
           status_priority: 2
         },
         {
-          status_tail_number: 15000404,
+          status_tail_number: "15000404",
           aircraft_id: 3,
           base_id: 3,
           status_is_flyable: false,

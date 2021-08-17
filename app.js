@@ -61,11 +61,6 @@ app.get('/status', function(req, res) {
           'The data you are looking for could not be found. Please try again', err
       })
     );
-
-
-
-
-
 });
 
 // GET /status/:id
@@ -115,23 +110,72 @@ app.post('/status', function(req, res) {
     "status_priority":    status.status_priority
   })
   .into('status')
-  .then(data => res.status(200).json(data))
+  .then(data => res.status(201).json(data))
   .then(console.log("post request complete"))
+  
 
 });
 
-// app.post('/', function(req, res){
-//     knex
-//     .insert({"title": req.body.title, "runtime": req.body.runtime, "release_year": req.body.release_year, "director": req.body.director})
-//     .into('movies')
-//     .then(data => res.status(200).json(data))
-//     .then(console.log("post request complete"))
-
 // PATCH /status/:status_id
 
+app.patch('/status/:status_id', function(req, res) {
+  knex('status')
+    .where('status_id', req.params.status_id)
+    .update(req.body)
+    .then((data) => {
+    if (data.length === 0){
+    return res.status(404).json({
+        message:
+        'Status ID not found'
+      })
+    }
+    else if (typeof req.body.status_tail_number === typeof 0) {
+      return res.status(406).json({
+        message: "Please use data type of string for the tail number"
+      })
+    }
+    else {
+        return res.status(200).send(`Status ${req.params.status_id} has been updated`)
+    }
+  })
+  .catch(err =>
+      res.status(400).json({
+      message:
+              'Invalid ID supplied'
+      })
+  );
+});
 
 
 // DELETE /status/:status_id
+
+app.delete('/status/:status_id', (req, res) => {
+    knex('status')
+    .where('status_id', req.params.status_id)
+    .then((data) => {
+      if (data.length === 0){
+        return res.status(404).json({
+          message:
+          'Status ID not found'
+      })
+      } else {
+          knex('status')
+          .where('status_id', req.params.status_id)
+          .del()
+          .then((data) => {
+            return res.status(200).send(`Status ${req.params.status_id} has been deleted`)
+          })
+      }
+    })
+    .catch(err =>
+        res.status(400).json({
+        message:
+                'Invalid ID supplied'
+        })
+    );
+});
+
+
 
 
 module.exports = app;
