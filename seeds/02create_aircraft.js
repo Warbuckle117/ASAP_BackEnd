@@ -6,16 +6,16 @@ exports.seed = function(knex) {
       // Inserts seed entries
       return knex('aircraft').insert([
         {
-          aircraft_type: 'c-17'
+          aircraft_name: 'c-17'
         },
         {
-          aircraft_type: 'f-16'
+          aircraft_name: 'f-16'
         },
         {
-          aircraft_type: 'kc-135'
+          aircraft_name: 'kc-135'
         },
         {
-          aircraft_type: 'b-52'
+          aircraft_name: 'b-52'
         }
       ]);
     });

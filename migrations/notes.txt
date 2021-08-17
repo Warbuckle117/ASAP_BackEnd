@@ -23,3 +23,7 @@ TIMESTAMPS
         table.string('status_description');
         table.integer('status_priority');
         table.timestamps(true, true); // adds created_at and updated_at
+
+
+SELECT (s.status_id, s.status_tail_number, s.aircraft_id AS aircraft_name, s.base_id AS base_name, s.status_is_flyable, s.status_description, s.status_priority, s.created_at, s.updated
+_at
