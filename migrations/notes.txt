@@ -1,0 +1,25 @@
+docker container
+056583fcc05b
+
+createdb -U postgres asap_database
+
+CREATE TABLE status (
+status_id serial,
+status_tail_number string UNIQUE,
+FOREIGN KEY(status_aircraft_id) REFERENCES (aircraft.aircraft_id),
+FOREIGN KEY(status_base_id) REFERENCES (base.base_id),
+status_status boolean NOT NULL DEFAULT true,
+status_description string,
+status_priority int,
+TIMESTAMPS
+);
+
+
+ table.increments('status_id'); // adds an auto incrementing PK column
+        table.string('status_tail_number').unique();
+        table.foreign('aircraft_id').references('aircraft.aircraft_id');
+        table.foreign('base_id').references('base.base_id');
+        table.boolean('status_status').notNullable().defaultTo(true);
+        table.string('status_description');
+        table.integer('status_priority');
+        table.timestamps(true, true); // adds created_at and updated_at
