@@ -19,10 +19,12 @@
   "homepage": "https://github.com/Warbuckle117/ASAP_BackEnd#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "jest": "^27.0.6",
     "knex": "^0.21.21",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "supertest": "^6.1.5",
     "nodemon": "^2.0.12",
-    "pg": "^8.7.1",
-    "supertest": "^6.1.5"
+    "jest": "^27.0.6"
   }
 }
