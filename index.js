@@ -3,5 +3,5 @@ const app = require('./app');
 const PORT = process.env.PORT || 3001;
 
 app.listen(PORT, () => {
-  console.log(`want some movies boii on ${PORT}`);
+  console.log(`aircraft info bro on ${PORT}`);
 });
