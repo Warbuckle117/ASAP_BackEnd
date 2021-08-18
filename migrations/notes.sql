@@ -12,7 +12,9 @@ created_at timestamp
 SELECT (
   s.status_id, 
   s.status_tail_number, 
+  s.aircraft_id,
   a.aircraft_name,
+  s.base_id,
   b.base_name,
   s.status_is_flyable, 
   s.status_description, 
