@@ -6,12 +6,14 @@ app.use(express.json()) // for parsing application/json
 
 
 app.get('/', function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   res.status(200).send("info at other endpoints.")
 })
 
 // GET /aircraft - lists all aircraft.
 
 app.get('/aircraft', function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   knex
     .select('*')
     .from('aircraft')
@@ -27,6 +29,7 @@ app.get('/aircraft', function(req, res) {
 // GET /base
 
 app.get('/base', function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   knex
     .select('*')
     .from('base')
@@ -42,6 +45,7 @@ app.get('/base', function(req, res) {
 // GET /status
 
 app.get('/status', function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   knex('status as s')
     .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
     .innerJoin('base as b', 's.base_id', 'b.base_id')
@@ -68,6 +72,7 @@ app.get('/status', function(req, res) {
 // GET /status/:id
 
 app.get('/status/:status_id', function(req, res){
+  res.setHeader("Access-Control-Allow-Origin", "*");
     /* GET a status by id */
     knex('status as s')
     .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
@@ -104,6 +109,7 @@ app.get('/status/:status_id', function(req, res){
 // POST /status
 
 app.post('/status', function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   const status = req.body;
   let isInputValidObject = inputValidation(status);
 
@@ -172,6 +178,7 @@ app.post('/status', function(req, res) {
 // PATCH /status/:status_id
 
 app.patch('/status/:status_id', function(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*");
   const status = req.body;
   let isInputValidObject = inputValidation(status);
 
@@ -227,6 +234,7 @@ app.patch('/status/:status_id', function(req, res) {
 // DELETE /status/:status_id
 
 app.delete('/status/:status_id', (req, res) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
     let deletedRow = {};
     function setDeletedRow (input) {
       deletedRow = input[0]
