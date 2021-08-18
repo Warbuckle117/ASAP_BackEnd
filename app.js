@@ -261,7 +261,7 @@ app.delete('/status/:status_id', (req, res) => {
           .where('status_id', req.params.status_id)
           .del()
           .then((data) => {
-            return res.status(400).send({
+            return res.status(200).send({
               message: `Status ${req.params.status_id} has been deleted`,
               status: deletedRow
             })
