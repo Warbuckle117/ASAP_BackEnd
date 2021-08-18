@@ -60,7 +60,7 @@ app.get('/status', function(req, res) {
     .catch(err =>
       res.status(404).json({
         message:
-          'The data you are looking for could not be found. Please try again', err
+          'The data you are looking for could not be found. Please try again'
       })
     );
 });
@@ -104,7 +104,8 @@ app.get('/status/:status_id', function(req, res){
 // POST /status
 
 app.post('/status', function(req, res) {
-  let status = req.body;
+  const status = req.body;
+  const tailNumberValidationRegex = /\d{8}/;
   let isTailNumberValid = false;
   let isAircraftIdInt = false
   let isBaseIdInt = false
@@ -112,7 +113,14 @@ app.post('/status', function(req, res) {
   let isDiscriptionString = false;
   let isPriorityInt = false;
 
-  //TODO tailNumber validation
+  if (tailNumberValidationRegex.test(status.status_tail_number) === true) {
+    isTailNumberValid = true;
+  } else {
+    res.status(400).send({
+      message: `Your status_tail_number input is invalid. Please use a string of only 8 digits.`,
+      status: status
+    })
+  }
   if (typeof status.aircraft_id === typeof 0) {
     isAircraftIdInt = true;
   } else {
@@ -153,7 +161,7 @@ app.post('/status', function(req, res) {
       status: status
     })
   }
-  if (isAircraftIdInt === true && isBaseIdInt === true && isFlyableBoolean === true && isDiscriptionString === true && isPriorityInt === true) {
+  if (isAircraftIdInt === true && isBaseIdInt === true && isFlyableBoolean === true && isDiscriptionString === true && isPriorityInt === true && isTailNumberValid === true) {
       knex.insert({
         "status_tail_number": status.status_tail_number, // verify it is a string, length of 8, and no characters only numbers, while maintaining leading zeros.
         "aircraft_id":        status.aircraft_id, // verify it is a number
@@ -175,15 +183,23 @@ app.post('/status', function(req, res) {
 // PATCH /status/:status_id
 
 app.patch('/status/:status_id', function(req, res) {
-  let status = req.body;
-  let isTailNumberValid = false; // TODO
+  const status = req.body;
+  const tailNumberValidationRegex = /\d{8}/;
+  let isTailNumberValid = false;
   let isAircraftIdInt = false
   let isBaseIdInt = false
   let isFlyableBoolean = false;
   let isDiscriptionString = false;
   let isPriorityInt = false;
 
-  // isTailNumberVaild TO DO
+  if (tailNumberValidationRegex.test(status.status_tail_number) === true) {
+    isTailNumberValid = true;
+  } else {
+    res.status(400).send({
+      message: `Your status_tail_number input is invalid. Please use a string of only 8 digits.`,
+      status: status
+    })
+  }
   if (typeof status.aircraft_id === typeof 0) {
     isAircraftIdInt = true;
   } else {
