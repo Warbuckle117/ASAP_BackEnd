@@ -105,63 +105,9 @@ app.get('/status/:status_id', function(req, res){
 
 app.post('/status', function(req, res) {
   const status = req.body;
-  const tailNumberValidationRegex = /\d{8}/;
-  let isTailNumberValid = false;
-  let isAircraftIdInt = false
-  let isBaseIdInt = false
-  let isFlyableBoolean = false;
-  let isDiscriptionString = false;
-  let isPriorityInt = false;
+  let isInputValidObject = inputValidation(status);
 
-  if (tailNumberValidationRegex.test(status.status_tail_number) === true) {
-    isTailNumberValid = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_tail_number input is invalid. Please use a string of only 8 digits.`,
-      status: status
-    })
-  }
-  if (typeof status.aircraft_id === typeof 0) {
-    isAircraftIdInt = true;
-  } else {
-    res.status(400).send({
-      message: `Your aircraft_id datatype is invalid. Please use a number.`,
-      status: status
-    })
-  }
-  if (typeof status.base_id === typeof 0) {
-    isBaseIdInt = true
-  } else {
-    res.status(400).send({
-      message: `Your base_id datatype is invalid. Please use a number.`,
-      status: status
-    })
-  }
-  if (typeof status.status_is_flyable === typeof true) {
-    isFlyableBoolean = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_is_flyable datatype is invalid. Please a boolean.`,
-      status: status
-    })
-  }
-  if (typeof status.status_description === typeof 'string') {
-    isDiscriptionString = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_description datatype is invalid. Please use a string.`,
-      status: status
-    })
-  }
-  if (typeof status.status_priority === typeof 0) {
-    isPriorityInt = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_priority datatype is invalid. Please use a number.`,
-      status: status
-    })
-  }
-  if (isAircraftIdInt === true && isBaseIdInt === true && isFlyableBoolean === true && isDiscriptionString === true && isPriorityInt === true && isTailNumberValid === true) {
+  if (isInputValidObject.success === true) {
       knex.insert({
         "status_tail_number": status.status_tail_number, // verify it is a string, length of 8, and no characters only numbers, while maintaining leading zeros.
         "aircraft_id":        status.aircraft_id, // verify it is a number
@@ -171,11 +117,54 @@ app.post('/status', function(req, res) {
         "status_priority":    status.status_priority // verify it is a number
       })
       .into('status')
-      .then(data => res.status(201).json(data))
-      .catch(data => res.status(400).send({
-        message: `Status with tail number of ${status.status_tail_number} already exists`,
-        status: status
-      }))
+      .then((data) => {
+        knex('status as s')
+          .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
+          .innerJoin('base as b', 's.base_id', 'b.base_id')
+          .select('s.status_id', 
+                  's.status_tail_number', 
+                  's.aircraft_id', 
+                  'a.aircraft_name', 
+                  's.base_id', 
+                  'b.base_name', 
+                  's.status_is_flyable', 
+                  's.status_description', 
+                  's.status_priority', 
+                  's.updated_at')
+            .where('s.status_tail_number', status.status_tail_number)
+            .then(returnStatus => res.status(201).send({
+                message: "Status submit succesfully",
+                status: returnStatus
+              })
+            )
+      })
+      .catch(data => {
+        knex('status as s')
+          .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
+          .innerJoin('base as b', 's.base_id', 'b.base_id')
+          .select('s.status_id', 
+                  's.status_tail_number', 
+                  's.aircraft_id', 
+                  'a.aircraft_name', 
+                  's.base_id', 
+                  'b.base_name', 
+                  's.status_is_flyable', 
+                  's.status_description', 
+                  's.status_priority', 
+                  's.updated_at')
+            .where('s.status_tail_number', status.status_tail_number)
+            .then(returnStatus => {
+              res.status(400).send({
+                message: `Status with tail number of ${status.status_tail_number} already exists`,
+                status: returnStatus
+              })
+            })
+    })
+  } else {
+    res.status(400).send({
+      message: isInputValidObject.error,
+      status: status
+    })
   }
 
 });
@@ -184,91 +173,53 @@ app.post('/status', function(req, res) {
 
 app.patch('/status/:status_id', function(req, res) {
   const status = req.body;
-  const tailNumberValidationRegex = /\d{8}/;
-  let isTailNumberValid = false;
-  let isAircraftIdInt = false
-  let isBaseIdInt = false
-  let isFlyableBoolean = false;
-  let isDiscriptionString = false;
-  let isPriorityInt = false;
+  let isInputValidObject = inputValidation(status);
 
-  if (tailNumberValidationRegex.test(status.status_tail_number) === true) {
-    isTailNumberValid = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_tail_number input is invalid. Please use a string of only 8 digits.`,
-      status: status
-    })
-  }
-  if (typeof status.aircraft_id === typeof 0) {
-    isAircraftIdInt = true;
-  } else {
-    res.status(400).send({
-      message: `Your aircraft_id datatype is invalid. Please use a number.`,
-      status: status
-    })
-  }
-  if (typeof status.base_id === typeof 0) {
-    isBaseIdInt = true
-  } else {
-    res.status(400).send({
-      message: `Your base_id datatype is invalid. Please use a number.`,
-      status: status
-    })
-  }
-  if (typeof status.status_is_flyable === typeof true) {
-    isFlyableBoolean = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_is_flyable datatype is invalid. Please a boolean.`,
-      status: status
-    })
-  }
-  if (typeof status.status_description === typeof 'string') {
-    isDiscriptionString = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_description datatype is invalid. Please use a string.`,
-      status: status
-    })
-  }
-  if (typeof status.status_priority === typeof 0) {
-    isPriorityInt = true;
-  } else {
-    res.status(400).send({
-      message: `Your status_priority datatype is invalid. Please use a number.`,
-      status: status
-    })
-  }
-  if (isAircraftIdInt === true && isBaseIdInt === true && isFlyableBoolean === true && isDiscriptionString === true && isPriorityInt === true) {
-  knex('status')
-    .where('status_id', req.params.status_id)
-    .update(req.body)
-    .then((data) => {
-      if (data.length === 0){
-      return res.status(404).json({
-          message:
-          'Status ID not found'
-        })
-      }
-      else if (typeof req.body.status_tail_number === typeof 0) {
-        return res.status(406).json({
-          message: "Please use data type of string for the tail number"
-        })
-      }
-      else {
-          return res.status(200).send({
-            message: `Status ${req.params.status_id} has been updated`,
-            status: status
+  if (isInputValidObject.success === true) {
+    console.log("Inside of the if before query")
+    knex('status')
+      .where('status_id', req.params.status_id)
+      .update(req.body)
+      .then((data) => {
+        console.log("I'm data: ", data)
+        if (data === 0){
+        return res.status(404).json({
+            message:
+            'Status ID not found'
           })
-      }
-    })
-   .catch(err =>
-      res.status(400).json({
-      message:
-              'Invalid ID supplied'
+        } else {
+              knex('status as s')
+                .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
+                .innerJoin('base as b', 's.base_id', 'b.base_id')
+                .select('s.status_id', 
+                        's.status_tail_number', 
+                        's.aircraft_id', 
+                        'a.aircraft_name', 
+                        's.base_id', 
+                        'b.base_name', 
+                        's.status_is_flyable', 
+                        's.status_description', 
+                        's.status_priority', 
+                        's.updated_at')
+                  .where('s.status_tail_number', status.status_tail_number)
+                  .then(returnStatus => {
+                          res.status(400).send({
+                            message: `Status ${req.params.status_id} has been updated`,
+                            status: returnStatus
+                          })
+                  })
+        }
       })
-    );
+      .catch(err =>
+          res.status(400).send({
+          message: 'Invalid ID supplied'
+          })
+        );
+  } else {
+    res.status(400).send({
+      message: isInputValidObject.error,
+      status: status
+    })
   }
 });
 
@@ -311,7 +262,70 @@ app.delete('/status/:status_id', (req, res) => {
     );
 });
 
+function inputValidation(status) {
+  const tailNumberValidationRegex = /\d{8}/;
+  let isTailNumberValid = false;
+  let isAircraftIdInt = false
+  let isBaseIdInt = false
+  let isFlyableBoolean = false;
+  let isDiscriptionString = false;
+  let isPriorityInt = false;
 
+  if (tailNumberValidationRegex.test(status.status_tail_number) === true) {
+    isTailNumberValid = true;
+  } else {
+    return {
+      success: false,
+      error: `Your status_tail_number input is invalid. Please use a string of only 8 digits.`
+    }
+  }
+  if (typeof status.aircraft_id === typeof 0) {
+    isAircraftIdInt = true;
+  } else {
+    return {
+      success: false,
+      error: `Your aircraft_id datatype is invalid. Please use a number.`
+    }
+  }
+  if (typeof status.base_id === typeof 0) {
+    isBaseIdInt = true
+  } else {
+    return {
+      success: false,
+      error: `Your base_id datatype is invalid. Please use a number.`
+    }
+  }
+  if (typeof status.status_is_flyable === typeof true) {
+    isFlyableBoolean = true;
+  } else {
+    return {
+      success: false,
+      error: `Your status_is_flyable datatype is invalid. Please a boolean.`
+    }
+  }
+  if (typeof status.status_description === typeof 'string') {
+    isDiscriptionString = true;
+  } else {
+    return {
+      success: false,
+      error: `Your status_description datatype is invalid. Please use a string.`
+    }
+  }
+  if (typeof status.status_priority === typeof 0) {
+    isPriorityInt = true;
+  } else {
+    return {
+      success: false,
+      error: `Your status_priority datatype is invalid. Please use a number.`
+    }
+  }
+  if (isAircraftIdInt === true && isBaseIdInt === true && isFlyableBoolean === true && isDiscriptionString === true && isPriorityInt === true && isTailNumberValid === true) {
+    return {
+      success: true,
+      error: "none"
+    }
+  }
+}
 
 
 module.exports = app;
