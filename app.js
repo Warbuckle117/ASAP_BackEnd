@@ -1,9 +1,13 @@
 const express = require('express');
 const app = express();
 const knex = require('knex')(require('./knexfile.js')['development']);
+const cors = require('cors');
 
 app.use(express.json()) // for parsing application/json
 
+app.use(cors({
+  origin: '*'
+}));
 
 app.get('/', function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -183,12 +187,10 @@ app.patch('/status/:status_id', function(req, res) {
   let isInputValidObject = inputValidation(status);
 
   if (isInputValidObject.success === true) {
-    console.log("Inside of the if before query")
     knex('status')
       .where('status_id', req.params.status_id)
       .update(req.body)
       .then((data) => {
-        console.log("I'm data: ", data)
         if (data === 0){
         return res.status(404).json({
             message:
