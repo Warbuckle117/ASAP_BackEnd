@@ -183,13 +183,17 @@ app.post('/status', function(req, res) {
 
 app.patch('/status/:status_id', function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
-  const status = req.body;
+  let status = req.body;
+  delete status["status_id"]
+  delete status["aircraft_name"]
+  delete status["base_name"]
+
   let isInputValidObject = inputValidation(status);
 
   if (isInputValidObject.success === true) {
     knex('status')
       .where('status_id', req.params.status_id)
-      .update(req.body)
+      .update(status)
       .then((data) => {
         if (data === 0){
         return res.status(404).json({
@@ -212,7 +216,7 @@ app.patch('/status/:status_id', function(req, res) {
                         's.updated_at')
                   .where('s.status_tail_number', status.status_tail_number)
                   .then(returnStatus => {
-                          res.status(400).send({
+                          res.status(200).send({
                             message: `Status ${req.params.status_id} has been updated`,
                             status: returnStatus
                           })
@@ -257,7 +261,7 @@ app.delete('/status/:status_id', (req, res) => {
           .where('status_id', req.params.status_id)
           .del()
           .then((data) => {
-            return res.status(200).send({
+            return res.status(400).send({
               message: `Status ${req.params.status_id} has been deleted`,
               status: deletedRow
             })
