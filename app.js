@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const knex = require('knex')(require('./knexfile.js')['development']);
 const cors = require('cors');
+const limitNumber = 2147483647;
 
 app.use(express.json()) // for parsing application/json
 
@@ -13,6 +14,8 @@ app.get('/', function(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.status(200).send("info at other endpoints.")
 })
+
+
 
 // GET /aircraft - lists all aircraft.
 
@@ -47,10 +50,38 @@ app.get('/base', function(req, res) {
 });
 
 // GET /status
+// GET /status?
 
 app.get('/status', function(req, res) {
+  let limit = req.query.limit || limitNumber;
+  let offset = req.query.offset || 0
+
   res.setHeader("Access-Control-Allow-Origin", "*");
-  knex('status as s')
+
+  if (limit != limitNumber || offset != 0) {
+    knex({s: knex('status').limit(limit).offset(offset)})
+      .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
+      .innerJoin('base as b', 's.base_id', 'b.base_id')
+      .select('s.status_id', 
+              's.status_tail_number',
+              's.aircraft_id', 
+              'a.aircraft_name', 
+              's.base_id',
+              'b.base_name', 
+              's.status_is_flyable', 
+              's.status_description', 
+              's.status_priority', 
+              's.updated_at')
+      .orderBy('s.status_id')
+      .then(data => res.status(200).json(data))
+      .catch(err =>
+        res.status(404).json({
+          error:
+            'The data you are looking for could not be found. Please try again'
+        })
+      );
+  } else {
+    knex('status as s')
     .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
     .innerJoin('base as b', 's.base_id', 'b.base_id')
     .select('s.status_id', 
@@ -71,6 +102,7 @@ app.get('/status', function(req, res) {
           'The data you are looking for could not be found. Please try again'
       })
     );
+  }
 });
 
 // GET /status/:id
@@ -109,6 +141,9 @@ app.get('/status/:status_id', function(req, res){
         })
     );
 })
+
+
+
 
 // POST /status
 
