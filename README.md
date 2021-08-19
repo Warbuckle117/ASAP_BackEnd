@@ -15,6 +15,16 @@ Also requires a docker continer with a postgresql database.
 
 Be sure to edit the knexfile.js with the connection information for your database.
 
+## Testing the Backend
+
+### WARNING TESTING THE BACKEND DOES A FULL ROLLBACK AND MIGRATION AND SEED SO DO NOT TEST AFTER MODIFYING THE DATABASE
+
+
+To run tests in this backend
+
+> npm test
+
+
 ## End Points
 
 ### /status
@@ -50,8 +60,6 @@ Provides a list of aircraft models  currently in the database.
         "status_priority": int
     }
 ```
-
-
 
 ## Contributors
 
