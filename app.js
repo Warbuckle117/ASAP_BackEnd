@@ -24,7 +24,7 @@ app.get('/aircraft', function(req, res) {
     .then(data => res.status(200).json(data))
     .catch(err =>
       res.status(404).json({
-        message:
+        error:
           'The data you are looking for could not be found. Please try again'
       })
     );
@@ -40,7 +40,7 @@ app.get('/base', function(req, res) {
     .then(data => res.status(200).json(data))
     .catch(err =>
       res.status(404).json({
-        message:
+        error:
           'The data you are looking for could not be found. Please try again'
       })
     );
@@ -67,7 +67,7 @@ app.get('/status', function(req, res) {
     .then(data => res.status(200).json(data))
     .catch(err =>
       res.status(404).json({
-        message:
+        error:
           'The data you are looking for could not be found. Please try again'
       })
     );
@@ -95,7 +95,7 @@ app.get('/status/:status_id', function(req, res){
     .then(data => {
             if (data.length === 0){
             return res.status(404).json({
-                message:
+                error:
                 'Status ID not found'
             })
             } else {
@@ -104,7 +104,7 @@ app.get('/status/:status_id', function(req, res){
     })
     .catch(err =>
         res.status(400).json({
-        message:
+        error:
                 'Invalid ID supplied'
         })
     );
@@ -165,14 +165,14 @@ app.post('/status', function(req, res) {
             .where('s.status_tail_number', status.status_tail_number)
             .then(returnStatus => {
               res.status(400).send({
-                message: `Status with tail number of ${status.status_tail_number} already exists`,
+                error: `Status with tail number of ${status.status_tail_number} already exists`,
                 status: returnStatus
               })
             })
     })
   } else {
     res.status(400).send({
-      message: isInputValidObject.error,
+      error: isInputValidObject.error,
       status: status
     })
   }
@@ -197,7 +197,7 @@ app.patch('/status/:status_id', function(req, res) {
       .then((data) => {
         if (data === 0){
         return res.status(404).json({
-            message:
+            error:
             'Status ID not found'
           })
         } else {
@@ -225,12 +225,12 @@ app.patch('/status/:status_id', function(req, res) {
       })
       .catch(err =>
           res.status(400).send({
-          message: 'Invalid ID supplied'
+          error: 'Invalid ID supplied'
           })
         );
   } else {
     res.status(400).send({
-      message: isInputValidObject.error,
+      error: isInputValidObject.error,
       status: status
     })
   }
@@ -252,7 +252,7 @@ app.delete('/status/:status_id', (req, res) => {
     .then((data) => {
       if (data.length === 0){
         return res.status(404).json({
-          message:
+          error:
           'Status ID not found'
       })
       } else {
@@ -270,7 +270,7 @@ app.delete('/status/:status_id', (req, res) => {
     })
     .catch(err =>
         res.status(400).json({
-        message:
+        error:
                 'Invalid ID supplied'
         })
     );
