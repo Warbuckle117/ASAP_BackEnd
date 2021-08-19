@@ -37,7 +37,7 @@ test('GET /status/144 Status ID not found', async () => {
         .get('/status/144')
         .then((response, request) =>{
             expect(response.statusCode).toEqual(404)
-            expect(response.body.message).toEqual(testVariable)
+            expect(response.body.error).toEqual(testVariable)
             // console.log("This should be the response.body: ", response.body[0].status_id)
             // console.log("This should be the request: ", request)
         })
@@ -50,7 +50,7 @@ test('GET /status/abc Invalid ID supplied', async () => {
         .get('/status/abc')
         .then((response, request) =>{
             expect(response.statusCode).toEqual(400)
-            expect(response.body.message).toEqual(testVariable)
+            expect(response.body.error).toEqual(testVariable)
             // console.log("This should be the response.body: ", response.body[0].status_id)
             // console.log("This should be the request: ", request)
         })
@@ -102,7 +102,7 @@ test('POST /status Tail Number already exists', async () => {
         //   console.log("POST /status response", response)
         //   console.log(" data.request.body: ", data.body.message)
           expect(data.statusCode).toEqual(400)
-          expect(data.body.message).toEqual(testVariable)
+          expect(data.body.error).toEqual(testVariable)
       })
 });
 
@@ -149,7 +149,7 @@ test('PATCH  /status/144 Status ID does not exist', async () => {
         .then((data) => {
             // console.log(" data.body.messege: ", data.body.message)
             // console.log("data.body: ", data.body)
-            expect(data.body.message).toEqual(testVariable)
+            expect(data.body.error).toEqual(testVariable)
             expect(data.statusCode).toEqual(404)
             // expect(data.body.status[0].status_description).toEqual(expectedStatusDescription)
         })
@@ -174,7 +174,7 @@ test('PATCH  /status/abc Invalid Status ID', async () => {
         .then((data) => {
             // console.log(" data.body.messege: ", data.body.message)
             // console.log("data.body: ", data.body)
-            expect(data.body.message).toEqual(testVariable)
+            expect(data.body.error).toEqual(testVariable)
             expect(data.statusCode).toEqual(400)
             // expect(data.body.status[0].status_description).toEqual(expectedStatusDescription)
         })
@@ -202,7 +202,7 @@ test('Delete /status/144 Status ID not found', async () => {
         //   console.log(" data.body.statusCode: ", data.statusCode)
         //   console.log(" data.body: ", data.body)
         expect(data.statusCode).toEqual(404)
-        expect(data.body.message).toEqual(testVariable)
+        expect(data.body.error).toEqual(testVariable)
       })
 });
 
@@ -215,7 +215,7 @@ test('Delete /status/abc Invalid Status ID', async () => {
         //   console.log(" data.body.statusCode: ", data.statusCode)
         //   console.log(" data.body: ", data.body)
         expect(data.statusCode).toEqual(400)
-        expect(data.body.message).toEqual(testVariable)
+        expect(data.body.error).toEqual(testVariable)
       })
 });
 
