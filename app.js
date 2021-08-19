@@ -53,15 +53,15 @@ app.get('/status', function(req, res) {
   knex('status as s')
     .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
     .innerJoin('base as b', 's.base_id', 'b.base_id')
-    .select('s.status_id', 
+    .select('s.status_id',
             's.status_tail_number',
-            's.aircraft_id', 
-            'a.aircraft_name', 
+            's.aircraft_id',
+            'a.aircraft_name',
             's.base_id',
-            'b.base_name', 
-            's.status_is_flyable', 
-            's.status_description', 
-            's.status_priority', 
+            'b.base_name',
+            's.status_is_flyable',
+            's.status_description',
+            's.status_priority',
             's.updated_at')
     .orderBy('s.status_id')
     .then(data => res.status(200).json(data))
@@ -81,15 +81,15 @@ app.get('/status/:status_id', function(req, res){
     knex('status as s')
     .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
     .innerJoin('base as b', 's.base_id', 'b.base_id')
-    .select('s.status_id', 
-            's.status_tail_number', 
-            's.aircraft_id', 
-            'a.aircraft_name', 
-            's.base_id', 
-            'b.base_name', 
-            's.status_is_flyable', 
-            's.status_description', 
-            's.status_priority', 
+    .select('s.status_id',
+            's.status_tail_number',
+            's.aircraft_id',
+            'a.aircraft_name',
+            's.base_id',
+            'b.base_name',
+            's.status_is_flyable',
+            's.status_description',
+            's.status_priority',
             's.updated_at')
     .where('status_id', req.params.status_id)
     .then(data => {
@@ -123,7 +123,7 @@ app.post('/status', function(req, res) {
         "aircraft_id":        status.aircraft_id, // verify it is a number
         "base_id":            status.base_id, // verify it is a number
         "status_is_flyable":  status.status_is_flyable, // verify it is a boolean
-        "status_description": status.status_description, // verify it is a string 
+        "status_description": status.status_description, // verify it is a string
         "status_priority":    status.status_priority // verify it is a number
       })
       .into('status')
@@ -131,19 +131,19 @@ app.post('/status', function(req, res) {
         knex('status as s')
           .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
           .innerJoin('base as b', 's.base_id', 'b.base_id')
-          .select('s.status_id', 
-                  's.status_tail_number', 
-                  's.aircraft_id', 
-                  'a.aircraft_name', 
-                  's.base_id', 
-                  'b.base_name', 
-                  's.status_is_flyable', 
-                  's.status_description', 
-                  's.status_priority', 
+          .select('s.status_id',
+                  's.status_tail_number',
+                  's.aircraft_id',
+                  'a.aircraft_name',
+                  's.base_id',
+                  'b.base_name',
+                  's.status_is_flyable',
+                  's.status_description',
+                  's.status_priority',
                   's.updated_at')
             .where('s.status_tail_number', status.status_tail_number)
             .then(returnStatus => res.status(201).send({
-                message: "Status submit succesfully",
+                message: `Status For ${status.status_tail_number} Created Successfully`,
                 status: returnStatus
               })
             )
@@ -152,20 +152,20 @@ app.post('/status', function(req, res) {
         knex('status as s')
           .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
           .innerJoin('base as b', 's.base_id', 'b.base_id')
-          .select('s.status_id', 
-                  's.status_tail_number', 
-                  's.aircraft_id', 
-                  'a.aircraft_name', 
-                  's.base_id', 
-                  'b.base_name', 
-                  's.status_is_flyable', 
-                  's.status_description', 
-                  's.status_priority', 
+          .select('s.status_id',
+                  's.status_tail_number',
+                  's.aircraft_id',
+                  'a.aircraft_name',
+                  's.base_id',
+                  'b.base_name',
+                  's.status_is_flyable',
+                  's.status_description',
+                  's.status_priority',
                   's.updated_at')
             .where('s.status_tail_number', status.status_tail_number)
             .then(returnStatus => {
               res.status(400).send({
-                error: `Status with tail number of ${status.status_tail_number} already exists`,
+                error: `Error: Status ${status.status_tail_number} Already Exists.`,
                 status: returnStatus
               })
             })
@@ -204,20 +204,20 @@ app.patch('/status/:status_id', function(req, res) {
               knex('status as s')
                 .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
                 .innerJoin('base as b', 's.base_id', 'b.base_id')
-                .select('s.status_id', 
-                        's.status_tail_number', 
-                        's.aircraft_id', 
-                        'a.aircraft_name', 
-                        's.base_id', 
-                        'b.base_name', 
-                        's.status_is_flyable', 
-                        's.status_description', 
-                        's.status_priority', 
+                .select('s.status_id',
+                        's.status_tail_number',
+                        's.aircraft_id',
+                        'a.aircraft_name',
+                        's.base_id',
+                        'b.base_name',
+                        's.status_is_flyable',
+                        's.status_description',
+                        's.status_priority',
                         's.updated_at')
                   .where('s.status_tail_number', status.status_tail_number)
                   .then(returnStatus => {
                           res.status(200).send({
-                            message: `Status ${req.params.status_id} has been updated`,
+                            message: `Status of ${status.status_tail_number} Updated Successfully`,
                             status: returnStatus
                           })
                   })
@@ -246,7 +246,7 @@ app.delete('/status/:status_id', (req, res) => {
       deletedRow = input[0]
     }
 
-    
+
     knex('status')
     .where('status_id', req.params.status_id)
     .then((data) => {
@@ -262,7 +262,7 @@ app.delete('/status/:status_id', (req, res) => {
           .del()
           .then((data) => {
             return res.status(200).send({
-              message: `Status ${req.params.status_id} has been deleted`,
+              message: `Status ${req.params.status_id} Deleted Successfully`,
               status: deletedRow
             })
           })
@@ -290,7 +290,7 @@ function inputValidation(status) {
   } else {
     return {
       success: false,
-      error: `Your status_tail_number input is invalid. Please use a string of only 8 digits.`
+      error: `Error: Tail Number Invalid. Should Be 8 Digit Numeric. Ex. 12003456`
     }
   }
   if (typeof status.aircraft_id === typeof 0) {
@@ -298,7 +298,7 @@ function inputValidation(status) {
   } else {
     return {
       success: false,
-      error: `Your aircraft_id datatype is invalid. Please use a number.`
+      error: `Error: Please Select an Aircraft Type.`
     }
   }
   if (typeof status.base_id === typeof 0) {
@@ -306,7 +306,7 @@ function inputValidation(status) {
   } else {
     return {
       success: false,
-      error: `Your base_id datatype is invalid. Please use a number.`
+      error: `Error: Please Select a Base.`
     }
   }
   if (typeof status.status_is_flyable === typeof true) {
@@ -314,7 +314,7 @@ function inputValidation(status) {
   } else {
     return {
       success: false,
-      error: `Your status_is_flyable datatype is invalid. Please a boolean.`
+      error: `Error: Please Select Maintenance Status.`
     }
   }
   if (typeof status.status_description === typeof 'string') {
@@ -322,7 +322,7 @@ function inputValidation(status) {
   } else {
     return {
       success: false,
-      error: `Your status_description datatype is invalid. Please use a string.`
+      error: `Error: Invalid Input in Description.`
     }
   }
   if (typeof status.status_priority === typeof 0) {
@@ -330,7 +330,7 @@ function inputValidation(status) {
   } else {
     return {
       success: false,
-      error: `Your status_priority datatype is invalid. Please use a number.`
+      error: `Error: Please Select Maintenance Priority.`
     }
   }
   if (isAircraftIdInt === true && isBaseIdInt === true && isFlyableBoolean === true && isDiscriptionString === true && isPriorityInt === true && isTailNumberValid === true) {
