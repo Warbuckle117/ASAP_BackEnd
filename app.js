@@ -4,6 +4,10 @@ const knex = require('knex')(require('./knexfile.js')['development']);
 const cors = require('cors');
 const limitNumber = 2147483647;
 
+//CONFIG STUFF
+const PORT = process.env.PORT || 3001;
+const hostURL = `http://localhost:${PORT}`
+
 app.use(express.json()) // for parsing application/json
 
 app.use(cors({
@@ -102,6 +106,75 @@ app.get('/status', function(req, res) {
           'The data you are looking for could not be found. Please try again'
       })
     );
+  }
+});
+
+//GET /status2
+
+app.get('/status2', function(req, res) {
+  let limit = req.query.limit || limitNumber;
+  let offset = req.query.offset || 0;
+  let count = 0;
+
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  knex('status').count('status_id').then((data)=>setCount(data));
+
+  if (limit != limitNumber || offset != 0) {
+    knex({s: knex('status').limit(limit).offset(offset)})
+      .innerJoin('aircraft as a', 's.aircraft_id', 'a.aircraft_id')
+      .innerJoin('base as b', 's.base_id', 'b.base_id')
+      .select('s.status_id', 
+              's.status_tail_number',
+              's.aircraft_id', 
+              'a.aircraft_name', 
+              's.base_id', 
+              'b.base_name', 
+              's.status_is_flyable', 
+              's.status_description', 
+              's.status_priority', 
+              's.updated_at')
+      .orderBy('s.status_id')
+      .then(data => {
+        count = parseInt(count[0].count)
+        let previousOffset = parseInt(offset) - parseInt(limit);
+        let nextOffset = parseInt(offset) + parseInt(limit);
+        let previousURL = "";
+        let nextURL = "";
+        
+        if (offset < 0){
+          previousURL = null;
+          nextURL = `${hostURL}/status2?limit=${limit}&offset=${(nextOffset)}`;
+        } else if ( offset >= count ){
+          previousURL = `${hostURL}/status2?limit=${limit}&offset=${(previousOffset)}`;
+          nextURL = null;
+        } else {
+          previousURL = `${hostURL}/status2?limit=${limit}&offset=${(previousOffset)}`;
+          nextURL = `${hostURL}/status2?limit=${limit}&offset=${(nextOffset)}`;
+        }
+        
+        res.status(200).send({
+          count: count,
+          next: nextURL,
+          previous: previousURL,
+          results: data
+        })
+        
+      })
+      .catch(err =>
+        res.status(404).json({
+          error:
+            'The data you are looking for could not be found. Please try again'
+        })
+      );
+  } else {
+    res.status(400).send({
+      error: "Error: please input a limit and offset."
+    })
+  }
+
+  function setCount (value) {
+    count = value;
   }
 });
 
