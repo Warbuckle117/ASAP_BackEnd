@@ -66,7 +66,7 @@ app.get('/status', function(req, res) {
               's.status_tail_number',
               's.aircraft_id', 
               'a.aircraft_name', 
-              's.base_id',
+              's.base_id', 
               'b.base_name', 
               's.status_is_flyable', 
               's.status_description', 
@@ -200,7 +200,7 @@ app.post('/status', function(req, res) {
             .where('s.status_tail_number', status.status_tail_number)
             .then(returnStatus => {
               res.status(400).send({
-                error: `Error: Status ${status.status_tail_number} Already Exists.`,
+                error: `Error: Status with tail number ${status.status_tail_number} already exists.`,
                 status: returnStatus
               })
             })

@@ -116,7 +116,7 @@ describe("These are the tests for GET", () => {
 describe("These are the tests for all the POST", () => {
 
     test('POST /status with correct info', async () => {
-        const testVariable = "Status submit succesfully";
+        const testVariable = "Status For 44226688 Created Successfully";
 
         return await request(app)
         .post('/status')
@@ -130,7 +130,7 @@ describe("These are the tests for all the POST", () => {
     });
 
     test('POST /status Tail Number already exists', async () => {
-        const testVariable = "Status with tail number of 44226688 already exists";
+        const testVariable = "Error: Status with tail number 44226688 already exists.";
 
         return await request(app)
         .post('/status')
@@ -151,7 +151,7 @@ describe("These are the tests for all the POST", () => {
 describe("These are the tests for all the PATCH", () => {
 
     test('PATCH  /status/44', async () => {
-        const testVariable = "Status 44 has been updated";
+        const testVariable = "Status of 44226688 Updated Successfully";
         const expectedStatusDescription = "Welcome to the Thunderdome";
 
         return await request(app)
@@ -233,7 +233,7 @@ describe("These are the tests for all the PATCH", () => {
 describe("These are the tests for all the DELETE", () => {
 
     test('Delete /status/44', async () => {
-        const testVariable = 'Status 44 has been deleted';
+        const testVariable = 'Status 44 Deleted Successfully';
 
         return await request(app)
         .delete('/status/44')
